@@ -12,6 +12,7 @@ fastapi = "^0.104.0"
 pytest = "^7.4.2"
 pydantic-settings = "^2.0.3"
 jinja2 = "^3.1.2"
+github-webhooks-framework = {git = "https://github.com/datadavev/github-webhooks.git", rev = "dependency_relax"}
 
 [tool.poetry.group.dev.dependencies]
 uvicorn = "^0.23.2"

@@ -17,6 +17,40 @@
     <h1>egservice - Example of a FastAPI service</h1>
     <content>
     <p>This is just an example service.</p>
+    <h2>Metadata</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+    {% for k, v in meta.items() %}
+        <tr>
+            <td>{{ k }}</td>
+            <td>{{ v }}</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
+    <h2>Request</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+    {% for k, v in request.items() %}
+        <tr>
+            <td>{{ k }}</td>
+            <td>{% if v is iterable and not v is string %}{% for vi in v %}{{vi}}<br />{% endfor %}{% else %}{{ v }}{% endif %}</td>
+        </tr>
+    {% endfor %}
+        </tbody>
+    </table>
     </content>
 </main>
 <footer></footer>

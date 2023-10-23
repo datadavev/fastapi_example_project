@@ -1,11 +1,11 @@
-'''
+"""
 Example FastAPI application
 
 This example FastAPI application includes:
 
 * configuration override with environment variables
 * logging to JsonL
-'''
+"""
 import logging
 import fastapi
 import fastapi.middleware
@@ -13,16 +13,20 @@ import fastapi.middleware.cors
 import fastapi.staticfiles
 import fastapi.templating
 
+import github_webhooks
+import github_webhooks.schemas
+
 import egservice
 import egservice.config
 import egservice.log_middleware
-
+import egservice.models.webhook
 
 # Setup access logging
 L = egservice.log_middleware.get_logger()
 
 
-app = fastapi.FastAPI(
+app = github_webhooks.create_app(
+    secret_token=None,
     title="EgFastAPI",
     description=__doc__,
     version=egservice.__version__,
@@ -70,9 +74,24 @@ templates = fastapi.templating.Jinja2Templates(
     directory=egservice.config.settings.template_dir
 )
 
+
+@app.hooks.register("pull_request", egservice.models.webhook.PullRequestPayload)
+async def pr_handler(payload:egservice.models.webhook.PullRequestPayload) -> None:
+    print(f'New pull request {payload.pull_request.title}')
+    print(f'  link: {payload.pull_request.url}')
+    print(f'  author: {payload.sender.login}')
+
+
+@app.hooks.register("ping", github_webhooks.schemas.WebhookCommonPayload)
+async def ping_handler(payload:github_webhooks.schemas.WebhookCommonPayload) -> None:
+    print(f'New ping {payload}')
+
+
 @app.get("/", include_in_schema=False)
-async def redirect_docs(request:fastapi.Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+async def redirect_docs(request: fastapi.Request):
+    return templates.TemplateResponse(
+        "index.html", {"request": request, "meta": {"version": egservice.__version__}}
+    )
 
 
 # Ignore requests for favicon

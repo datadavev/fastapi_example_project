@@ -77,6 +77,25 @@ typing-extensions = ">=4.8.0"
 all = ["email-validator (>=2.0.0)", "httpx (>=0.23.0)", "itsdangerous (>=1.1.0)", "jinja2 (>=2.11.2)", "orjson (>=3.2.1)", "pydantic-extra-types (>=2.0.0)", "pydantic-settings (>=2.0.0)", "python-multipart (>=0.0.5)", "pyyaml (>=5.3.1)", "ujson (>=4.0.1,!=4.0.2,!=4.1.0,!=4.2.0,!=4.3.0,!=5.0.0,!=5.1.0)", "uvicorn[standard] (>=0.12.0)"]
 
 [[package]]
+name = "github-webhooks-framework"
+version = "0.1.11"
+description = "GitHub Webhooks Framework"
+optional = false
+python-versions = "^3.9"
+files = []
+develop = false
+
+[package.dependencies]
+fastapi = "^0"
+pydantic = "*"
+
+[package.source]
+type = "git"
+url = "https://github.com/datadavev/github-webhooks.git"
+reference = "dependency_relax"
+resolved_reference = "fb7f7160ba9b7cd13e3983363eab9d048203f08d"
+
+[[package]]
 name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
@@ -457,4 +476,4 @@ standard = ["colorama (>=0.4)", "httptools (>=0.5.0)", "python-dotenv (>=0.13)",
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "74ae3c7973ce616043cd1efec6c01358b94749ce723c4db4525ffefb3e69d70a"
+content-hash = "a20fc137f61b9f20e3d49ccd415d7c8e1fe7022e1edf822109ca68ea5d871a8a"

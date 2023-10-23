@@ -9,6 +9,7 @@ import json
 import logging
 import sys
 import time
+import traceback
 import typing
 import fastapi
 import starlette.background
@@ -22,7 +23,9 @@ class JsonFormatter(logging.Formatter):
         super().__init__(formatter)
 
     # Format the time for this log event
-    def formatTime(self, record:logging.LogRecord, datefmt:typing.Optional[str]=None):
+    def formatTime(
+        self, record: logging.LogRecord, datefmt: typing.Optional[str] = None
+    ):
         ct = self.converter(record.created)
         if datefmt:
             s = time.strftime(datefmt, ct)
@@ -32,7 +35,7 @@ class JsonFormatter(logging.Formatter):
             s = f"{t}.{record.msecs:03.0f}Z"
         return s
 
-    def format(self, record:logging.LogRecord):
+    def format(self, record: logging.LogRecord):
         logging.Formatter.format(self, record)
         res = {
             "t": record.asctime,
@@ -40,6 +43,13 @@ class JsonFormatter(logging.Formatter):
             "name": record.name,
             "msg": record.getMessage(),
         }
+        if record.exc_info is not None:
+            res["filename"] = record.filename
+            res["funcname"] = record.funcName
+            res["stack_info"] = record.stack_info
+            exception = record.exc_info[1]
+            res["exc_info"] = str(exception)
+
         if hasattr(record, "extra_info"):
             res["req"] = (record.extra_info["req"],)
             res["res"] = record.extra_info["res"]
@@ -79,7 +89,7 @@ class LogMiddleware(starlette.middleware.base.BaseHTTPMiddleware):
             extra={"extra_info": self.get_extra_info(request, response)},
         )
 
-    async def dispatch(self, request: fastapi.Request, call_next:typing.Callable):
+    async def dispatch(self, request: fastapi.Request, call_next: typing.Callable):
         response = await call_next(request)
         response.background = starlette.background.BackgroundTask(
             self.write_log_data, request, response
@@ -87,7 +97,12 @@ class LogMiddleware(starlette.middleware.base.BaseHTTPMiddleware):
         return response
 
 
-def get_logger(name:typing.Optional[str]=None, level=logging.INFO, log_filename=None, log_stderr=True):
+def get_logger(
+    name: typing.Optional[str] = None,
+    level=logging.INFO,
+    log_filename=None,
+    log_stderr=True,
+):
     formatter = JsonFormatter("%(asctime)s")
     if name is not None:
         logger = logging.getLogger(name)
