@@ -6,6 +6,7 @@ This example FastAPI application includes:
 * configuration override with environment variables
 * logging to JsonL
 '''
+import logging
 import fastapi
 import fastapi.middleware
 import fastapi.middleware.cors
@@ -18,7 +19,7 @@ import egservice.log_middleware
 
 
 # Setup access logging
-L = egservice.log_middleware.get_logger("egservice")
+L = egservice.log_middleware.get_logger()
 
 
 app = fastapi.FastAPI(
@@ -89,7 +90,8 @@ if __name__ == "__main__":
             "main:app",
             port=egservice.config.settings.port,
             host=egservice.config.settings.host,
-            reload=True
+            reload=True,
+            log_config=None,
         )
     except ImportError as e:
         print("Unable to run as uvicorn is not available.")

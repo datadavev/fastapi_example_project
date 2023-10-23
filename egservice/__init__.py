@@ -2,6 +2,4 @@
 Example FastAPI service.
 '''
 
-import importlib.metadata
-__version__= importlib.metadata.version('fastapi-example-project')
-
+__version__ = "0.1.0"

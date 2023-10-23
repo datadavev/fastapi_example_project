@@ -9,6 +9,7 @@ import json
 import logging
 import sys
 import time
+import typing
 import fastapi
 import starlette.background
 import starlette.middleware.base
@@ -21,7 +22,7 @@ class JsonFormatter(logging.Formatter):
         super().__init__(formatter)
 
     # Format the time for this log event
-    def formatTime(self, record, datefmt=None):
+    def formatTime(self, record:logging.LogRecord, datefmt:typing.Optional[str]=None):
         ct = self.converter(record.created)
         if datefmt:
             s = time.strftime(datefmt, ct)
@@ -31,7 +32,7 @@ class JsonFormatter(logging.Formatter):
             s = f"{t}.{record.msecs:03.0f}Z"
         return s
 
-    def format(self, record):
+    def format(self, record:logging.LogRecord):
         logging.Formatter.format(self, record)
         res = {
             "t": record.asctime,
@@ -72,22 +73,27 @@ class LogMiddleware(starlette.middleware.base.BaseHTTPMiddleware):
             },
         }
 
-    def write_log_data(self, request, response):
+    def write_log_data(self, request: fastapi.Request, response: fastapi.Response):
         self.logger.info(
             f"{request.method} {request.url.path}",
             extra={"extra_info": self.get_extra_info(request, response)},
         )
 
-    async def dispatch(self, request, call_next):
+    async def dispatch(self, request: fastapi.Request, call_next:typing.Callable):
         response = await call_next(request)
         response.background = starlette.background.BackgroundTask(
             self.write_log_data, request, response
         )
         return response
 
-def get_logger(name, level=logging.INFO, log_filename=None, log_stderr=True):
+
+def get_logger(name:typing.Optional[str]=None, level=logging.INFO, log_filename=None, log_stderr=True):
     formatter = JsonFormatter("%(asctime)s")
-    logger = logging.getLogger(name)
+    if name is not None:
+        logger = logging.getLogger(name)
+    else:
+        logger = logging.root
+    logger.handlers.clear()
     logger.setLevel(level)
     if log_filename is not None:
         handler = logging.FileHandler(log_filename)

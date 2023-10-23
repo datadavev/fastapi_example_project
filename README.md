@@ -6,10 +6,9 @@ Example FastAPI project with core components
 
 ## Release Procedure
 
-Commit with a version tag. The GH workflow does the job.
+### Version bumping
 
-```
-gh release create 1.0.0 --generate-notes
-```
+Version is bumped manually using `tbump`, which will update the
+version entries in the files listed in `tbump.toml`.
 
-ref: https://github.com/python-poetry/poetry/issues/144
+ref: https://github.com/your-tools/tbump
