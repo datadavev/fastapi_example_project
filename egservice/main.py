@@ -82,9 +82,9 @@ async def pr_handler(payload:egservice.models.webhook.PullRequestPayload) -> Non
     print(f'  author: {payload.sender.login}')
 
 
-@app.hooks.register("ping", github_webhooks.schemas.WebhookCommonPayload)
-async def ping_handler(payload:github_webhooks.schemas.WebhookCommonPayload) -> None:
-    print(f'New ping {payload}')
+@app.hooks.register("push", egservice.models.webhook.PushPayload)
+async def push_handler(payload:egservice.models.webhook.PushPayload) -> None:
+    print(f'New push {payload}')
 
 
 @app.get("/", include_in_schema=False)
