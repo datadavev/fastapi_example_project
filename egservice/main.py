@@ -87,6 +87,7 @@ async def push_handler(payload:egservice.models.webhook.PushPayload) -> None:
     print(f'New push {payload}')
 
 
+
 @app.get("/", include_in_schema=False)
 async def redirect_docs(request: fastapi.Request):
     return templates.TemplateResponse(
