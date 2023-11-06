@@ -6,13 +6,10 @@ jobs:
   dispatch:
     name: Call Webhook
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        hook_url: ["${{ secrets.WEBHOOK_URL }}"]
     steps:
       - name: Call Webhook
         uses: distributhor/workflow-webhook@v3
         with:
-          webhook_url: ${{ matrix.hook_url }}
+          webhook_url: ${{ secrets.WEBHOOK_URL }}
           webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
           data: '{"key":"value", "key2":"value2"}'
