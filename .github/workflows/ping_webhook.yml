@@ -1,0 +1,12 @@
+name: "Ping Webhook"
+on:
+  workflow_dispatch:
+
+jobs:
+  dispatch:
+    name: Call Webhook
+    uses: distributhor/workflow-webhook@v3
+    with:
+      webhook_url: ${{ secrets.WEBHOOK_URL }}
+      webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
+      data: '{"key":"value", "key2":"value2"}'
