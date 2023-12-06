@@ -10,7 +10,7 @@ class Settings(pydantic_settings.BaseSettings):
     # for overriding these settings with env vars.
     # e.g. EGSERVICE_PORT=11000
     model_config = pydantic_settings.SettingsConfigDict(env_prefix="EGSERVICE_")
-    host: str = "localhost"
+    host: str = "0.0.0.0"
     port: int = 8000
     protocol: str = "http"
     static_dir: str = os.path.join(BASE_FOLDER, "static")
