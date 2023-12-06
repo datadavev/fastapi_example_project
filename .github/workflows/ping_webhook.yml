@@ -5,8 +5,12 @@ on:
 jobs:
   dispatch:
     name: Call Webhook
-    uses: distributhor/workflow-webhook@v3
-    with:
-      webhook_url: ${{ secrets.WEBHOOK_URL }}
-      webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
-      data: '{"key":"value", "key2":"value2"}'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Call Webhook
+        uses: distributhor/workflow-webhook@v3
+        with:
+          webhook_url: ${{ vars.WEBHOOK_URL }}
+          webhook_secret: ${{ secrets.WEBHOOK_SECRET }}
+          data: '{"key":"value", "key2":"value2"}'
+          verbose: true
